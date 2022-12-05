@@ -2,7 +2,7 @@ package types
 
 const (
 	// ModuleName defines the module name
-	ModuleName = "cronos"
+	ModuleName = "wns"
 
 	// StoreKey defines the primary module store key
 	StoreKey = ModuleName
@@ -14,24 +14,22 @@ const (
 	QuerierRoute = ModuleName
 
 	// MemStoreKey defines the in-memory store key
-	MemStoreKey = "mem_cronos"
+	MemStoreKey = "mem_wns"
 
 	// this line is used by starport scaffolding # ibc/keys/name
 )
 
 // prefix bytes for the cronos persistent store
 const (
-	prefixDenomToExternalContract = iota + 1
-	prefixDenomToAutoContract
-	prefixContractToDenom
+	prefixNodeToRecord = iota + 1
+	prefixAddressToName
 	paramsKey
 )
 
 // KVStore key prefixes
 var (
-	KeyPrefixDenomToExternalContract = []byte{prefixDenomToExternalContract}
-	KeyPrefixDenomToAutoContract     = []byte{prefixDenomToAutoContract}
-	KeyPrefixContractToDenom         = []byte{prefixContractToDenom}
+	KeyPrefixNodeToRecord  = []byte{prefixNodeToRecord}
+	KeyPrefixAddressToName = []byte{prefixAddressToName}
 
 	// ParamsKey is the key for params.
 	ParamsKey = []byte{paramsKey}
@@ -39,17 +37,12 @@ var (
 
 // this line is used by starport scaffolding # ibc/keys/port
 
-// DenomToExternalContractKey defines the store key for denom to contract mapping
-func DenomToExternalContractKey(denom string) []byte {
-	return append(KeyPrefixDenomToExternalContract, denom...)
+// NodeToRecordKey defines the store key for node to record mapping
+func NodeToRecordKey(node Node) []byte {
+	return append(KeyPrefixNodeToRecord, node[:]...)
 }
 
-// DenomToAutoContractKey defines the store key for denom to auto contract mapping
-func DenomToAutoContractKey(denom string) []byte {
-	return append(KeyPrefixDenomToAutoContract, denom...)
-}
-
-// ContractToDenomKey defines the store key for contract to denom reverse index
-func ContractToDenomKey(contract []byte) []byte {
-	return append(KeyPrefixContractToDenom, contract...)
+// AddressToNameKey defines the store key for account address to domain name mapping
+func AddressToNameKey(address string) []byte {
+	return append(KeyPrefixAddressToName, address...)
 }

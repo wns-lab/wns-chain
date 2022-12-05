@@ -140,7 +140,7 @@ import (
 )
 
 const (
-	Name = "cronos"
+	Name = "wns"
 
 	// AddrLen is the allowed length (in bytes) for an address.
 	//
