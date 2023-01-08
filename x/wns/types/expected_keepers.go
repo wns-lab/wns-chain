@@ -2,11 +2,12 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
 type AuthKeeper interface {
-	GetAccount(sdk.Context, sdk.AccAddress) types.AccountI
-	SetAccount(sdk.Context, types.AccountI)
+	GetAccount(sdk.Context, sdk.AccAddress) authtypes.AccountI
+	SetAccount(sdk.Context, authtypes.AccountI)
 }
 
 type BankKeeper interface {

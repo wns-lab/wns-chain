@@ -1,0 +1,17 @@
+syntax = "proto3";
+package wns;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/wns-lab/wns-chain/x/wns/types";
+
+message Node {
+    string node = 1;
+}
+
+message Record {
+    string owner = 1;
+    string resolver = 2;
+    google.protobuf.Timestamp ttl = 3;
+}
