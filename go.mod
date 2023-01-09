@@ -1,9 +1,9 @@
-module wns
+module github.com/wns-lab/wns-chain
 
-go 1.19
+go 1.18
 
 require (
-	github.com/cosmos/cosmos-sdk v0.33.0
+	github.com/cosmos/cosmos-sdk v0.46.3
 	github.com/gorilla/mux v1.7.0
 	github.com/spf13/cobra v0.0.3
 	github.com/spf13/viper v1.0.3
@@ -69,4 +69,8 @@ require (
 	gopkg.in/yaml.v2 v2.2.2 // indirect
 )
 
-replace golang.org/x/crypto => github.com/tendermint/crypto v0.0.0-20180820045704-3764759f34a5
+replace (
+	github.com/peggyjv/gravity-bridge/module/v2 => github.com/crypto-org-chain/gravity-bridge/module/v2 v2.0.1-0.20221207081618-52445f402bdb
+
+	golang.org/x/crypto => github.com/tendermint/crypto v0.0.0-20180820045704-3764759f34a5
+)
