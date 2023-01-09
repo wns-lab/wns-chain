@@ -37,6 +37,13 @@ func (msg MsgSetName) ValidateBasic() sdk.Error {
 	if len(msg.Name) == 0 || len(msg.Value) == 0 {
 		return sdk.ErrUnknownRequest("Name and/or Value cannot be empty")
 	}
+
+		for _,c := rangs msg.Name {
+			if !(c >= 'a' && c <= 'z') || !(c >= 'A' && c <= 'Z') || !(c >= '0' && c <= '9') {
+				return sdk.ErrUnknownRequest("The name does not match the character set limit, the character set is A-Za-z0-9. ")
+			}
+		}
+
 	return nil
 }
 
@@ -86,6 +93,13 @@ func (msg MsgBuyName) ValidateBasic() sdk.Error {
 		return sdk.ErrUnknownRequest("Name cannot be empty")
 	}
 
+	for _,c := rangs msg.Name {
+		if !(c >= 'a' && c <= 'z') || !(c >= 'A' && c <= 'Z') || !(c >= '0' && c <= '9') {
+			return sdk.ErrUnknownRequest("The name does not match the character set limit, the character set is A-Za-z0-9. ")
+		}
+	}
+
+
 	if !msg.Bid.IsAllPositive() {
 		return sdk.ErrInsufficientCoins("Bids must be positive")
 	}
@@ -106,3 +120,4 @@ func (msg MsgBuyName) GetSignBytes() []byte {
 func (msg MsgBuyName) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Buyer}
 }
+
