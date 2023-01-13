@@ -6,8 +6,8 @@ import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/wns-lab/wns-chain/x/wns/types";
 
-message Node {
-    string node = 1;
+message Name {
+    string name = 1;
 }
 
 message Record {

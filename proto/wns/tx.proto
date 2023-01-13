@@ -1,0 +1,63 @@
+syntax = "proto3";
+package wns;
+
+// this line is used by starport scaffolding # proto/tx/import
+
+import "gogoproto/gogo.proto";
+import "wns/wns.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/wns-lab/wns-chain/x/wns/types";
+
+service Msg {
+    rpc SetRecord(SetRecordRequest) returns (SetRecordResponse) {}
+    rpc GetRecord(GetRecordRequest) returns (GetRecordResponse) {}
+    rpc SetOwner(SetOwnerRequest) returns (SetOwnerResponse) {}
+    rpc SetResolver(SetResolverRequest) returns (SetResolverResponse) {}
+    rpc SetTTL(SetTTLRequest) returns (SetTTLResponse) {}
+}
+
+message SetRecordRequest {
+    Name name = 1;
+    Record record = 2;
+}
+
+message SetRecordResponse {
+    google.protobuf.Empty empty = 1;
+}
+
+message GetRecordRequest {
+    Name name = 1;
+}
+
+message GetRecordResponse {
+    Record record = 1;
+}
+
+message SetOwnerRequest {
+    Name name = 1;
+    string owner = 2;
+}
+
+message SetOwnerResponse {
+    google.protobuf.Empty empty = 1;
+}
+
+message SetResolverRequest {
+    Name name = 1;
+    string resolver = 2;
+}
+
+message SetResolverResponse {
+    google.protobuf.Empty empty = 1;
+}
+
+message SetTTLRequest {
+    Name name = 1;
+    google.protobuf.Timestamp ttl = 2;
+}
+
+message SetTTLResponse {
+    google.protobuf.Empty empty = 1;
+}

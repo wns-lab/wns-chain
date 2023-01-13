@@ -1,21 +1,13 @@
 package types
 
 import (
-	"time"
+	ens "github.com/wealdtech/go-ens"
 )
 
-type Node [32]byte
-
-func (n Node) IsValid() bool {
-	return true
-}
-
-type Record struct {
-	Owner    string
-	Resolver string
-	TTL      time.Time
-}
-
-func (r Record) IsValid() bool {
+func (name Name) IsValid() bool {
+	err := ens.Normalize(name.Name)
+	if err != nil {
+		return false
+	}
 	return true
 }

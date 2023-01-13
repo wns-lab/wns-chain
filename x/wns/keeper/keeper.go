@@ -31,16 +31,16 @@ func (k Keeper) SetRecord(ctx sdk.Context, node types.Node, record types.Record)
 	if node.IsValid() && record.IsValid() {
 		store := ctx.KVStore(k.storeKey)
 		bz := k.cdc.MustMarshal(record)
-		store.Set(types.KeyPrefixNodeToRecord(node), bz)
+		store.Set(types.NodeToRecordKey(node), bz)
 		return nil
 	}
 
 	return fmt.Errorf("either node or record is invalid")
 }
 
-func (k Keeper) IsOwner(ctx, sdk.Context, node types.Node, address string) bool {
+func (k Keeper) IsOwner(ctx sdk.Context, node types.Node, address string) bool {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(node[:])
+	bz := store.Get(node)
 	var record *types.Record
 	k.cdc.MustUnmarshal(bz, record)
 	if record == nil {
