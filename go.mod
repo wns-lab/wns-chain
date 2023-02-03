@@ -3,29 +3,20 @@ module github.com/wns-lab/wns-chain
 go 1.18
 
 require (
-	cosmossdk.io/errors v1.0.0-beta.7
-	cosmossdk.io/math v1.0.0-beta.3
-	github.com/armon/go-metrics v0.4.1
 	github.com/cosmos/cosmos-sdk v0.46.3
 	github.com/cosmos/ibc-go/v5 v5.0.0
+	github.com/crypto-org-chain/cronos v0.0.0-00010101000000-000000000000
 	github.com/ethereum/go-ethereum v1.10.19
 	github.com/evmos/ethermint v0.6.1-0.20221003153722-491c3da7ebd7
 	github.com/gogo/protobuf v1.3.3
-	github.com/golang/protobuf v1.5.2
 	github.com/gorilla/mux v1.8.0
-	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/peggyjv/gravity-bridge/module/v2 v2.0.0-20220420162017-838c0d25e974
 	github.com/rakyll/statik v0.1.7
 	github.com/spf13/cast v1.5.0
-	github.com/spf13/cobra v1.5.0
-	github.com/spf13/pflag v1.0.5
-	github.com/stretchr/testify v1.8.0
 	github.com/tendermint/tendermint v0.34.22
 	github.com/tendermint/tm-db v0.6.7
-	google.golang.org/genproto v0.0.0-20220822174746-9e6da59bd2fc
 	google.golang.org/grpc v1.50.0
 	google.golang.org/protobuf v1.28.1
-	gopkg.in/yaml.v2 v2.4.0
 )
 
 require (
@@ -33,6 +24,8 @@ require (
 	cloud.google.com/go/compute v1.7.0 // indirect
 	cloud.google.com/go/iam v0.4.0 // indirect
 	cloud.google.com/go/storage v1.22.1 // indirect
+	cosmossdk.io/errors v1.0.0-beta.7 // indirect
+	cosmossdk.io/math v1.0.0-beta.3 // indirect
 	filippo.io/edwards25519 v1.0.0-rc.1 // indirect
 	github.com/99designs/go-keychain v0.0.0-20191008050251-8e49817e8af4 // indirect
 	github.com/99designs/keyring v1.2.1 // indirect
@@ -40,7 +33,7 @@ require (
 	github.com/StackExchange/wmi v1.2.1 // indirect
 	github.com/VictoriaMetrics/fastcache v1.6.0 // indirect
 	github.com/Workiva/go-datastructures v1.0.53 // indirect
-	github.com/allegro/bigcache v1.2.1 // indirect
+	github.com/armon/go-metrics v0.4.1 // indirect
 	github.com/aws/aws-sdk-go v1.40.45 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bgentry/go-netrc v0.0.0-20140422174119-9fd32a8b3d3d // indirect
@@ -90,6 +83,7 @@ require (
 	github.com/gogo/gateway v1.1.0 // indirect
 	github.com/golang/glog v1.0.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
+	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/btree v1.0.1 // indirect
 	github.com/google/go-cmp v0.5.8 // indirect
@@ -101,6 +95,7 @@ require (
 	github.com/gorilla/handlers v1.5.1 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0 // indirect
+	github.com/grpc-ecosystem/grpc-gateway v1.16.0 // indirect
 	github.com/gsterjov/go-libsecret v0.0.0-20161001094733-a6f4afe4910c // indirect
 	github.com/gtank/merlin v0.1.1 // indirect
 	github.com/gtank/ristretto255 v0.1.2 // indirect
@@ -108,7 +103,6 @@ require (
 	github.com/hashicorp/go-getter v1.6.1 // indirect
 	github.com/hashicorp/go-immutable-radix v1.3.1 // indirect
 	github.com/hashicorp/go-safetemp v1.0.0 // indirect
-	github.com/hashicorp/go-uuid v1.0.2 // indirect
 	github.com/hashicorp/go-version v1.6.0 // indirect
 	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
@@ -149,15 +143,18 @@ require (
 	github.com/prometheus/tsdb v0.7.1 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
 	github.com/regen-network/cosmos-proto v0.3.1 // indirect
-	github.com/rjeczalik/notify v0.9.1 // indirect
+	github.com/rjeczalik/notify v0.9.2 // indirect
 	github.com/rs/cors v1.8.2 // indirect
 	github.com/rs/zerolog v1.27.0 // indirect
 	github.com/sasha-s/go-deadlock v0.3.1 // indirect
 	github.com/shirou/gopsutil v3.21.4-0.20210419000835-c7a38de76ee5+incompatible // indirect
 	github.com/spf13/afero v1.8.2 // indirect
+	github.com/spf13/cobra v1.5.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
+	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.13.0 // indirect
 	github.com/status-im/keycard-go v0.0.0-20200402102358-957c09536969 // indirect
+	github.com/stretchr/testify v1.8.0 // indirect
 	github.com/subosito/gotenv v1.4.1 // indirect
 	github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7 // indirect
 	github.com/tendermint/btcd v0.1.1 // indirect
@@ -181,8 +178,10 @@ require (
 	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f // indirect
 	google.golang.org/api v0.93.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
+	google.golang.org/genproto v0.0.0-20220822174746-9e6da59bd2fc // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	nhooyr.io/websocket v1.8.6 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect
@@ -190,6 +189,8 @@ require (
 
 replace (
 	github.com/cosmos/cosmos-sdk => github.com/cosmos/cosmos-sdk v0.46.2
+
+	github.com/crypto-org-chain/cronos => github.com/crypto-org-chain/cronos v0.9.0-beta2.0.20230117073352-c59f354c4bbf
 	github.com/ethereum/go-ethereum => github.com/ethereum/go-ethereum v1.10.19
 
 	// Fix upstream GHSA-h395-qcrw-5vmq vulnerability.

@@ -1,55 +1,105 @@
-package nameservice
+package keeper
 
 import (
+	"context"
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/wns-lab/wns-chain/x/wns/types"
 )
 
-// NewHandler returns a handler for "nameservice" type message.
-func NewHandler(keeper Keeper) sdk.Handler {
-	return func(ctx sdk.Context, msg sdk.Msg) sdk.Result {
-		switch msg := msg.(type) {
-		case MsgSetName:
-			return handleMsgSetName(ctx, keeper, msg)
-		case MsgBuyName:
-			return handleMsgBuyName(ctx, keeper, msg)
-		default:
-			errMsg := fmt.Sprintf("Unecognized nameservice Msg type: %v", msg.Type())
-			return sdk.ErrUnknownRequest(errMsg).Result()
-		}
+var _ types.MsgServer = MsgServer{}
 
-	}
+type MsgServer struct {
+	Keeper
 }
 
-// Handle a message to set name
-func handleMsgSetName(ctx sdk.Context, keeper Keeper, msg MsgSetName) sdk.Result {
-	if !msg.Owner.Equals(keeper.GetOwner(ctx, msg.Name)) {
-		return sdk.ErrUnauthorized("Incorrect Owner").Result()
+func (ms MsgServer) SetMetaData(goCtx context.Context, msg *types.MsgSetMetaData) (*types.SetMetaDataResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if !ms.IsOwner(ctx, msg.Name, msg.Sender) {
+		return nil, fmt.Errorf("sender %v is not the name owner", msg.Sender)
 	}
 
-	keeper.SetName(ctx, msg.Name, msg.Value)
-	return sdk.Result{}
+	err := ms.Keeper.SetMetaData(ctx, msg.Name, msg.Metadata)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.SetMetaDataResponse{}, nil
 }
 
-// Handle a message to buy name
-func handleMsgBuyName(ctx sdk.Context, keeper Keeper, msg MsgBuyName) sdk.Result {
-	if keeper.GetPrice(ctx, msg.Name).IsAllGT(msg.Bid) {
-		return sdk.ErrInsufficientCoins("Bid not high enough").Result()
+func (ms MsgServer) SetOwner(goCtx context.Context, msg *types.MsgSetOwner) (*types.SetOwnerResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	re, err := ms.GetMetaData(ctx, msg.Name)
+	if err != nil {
+		return nil, err
 	}
 
-	if keeper.HasOwner(ctx, msg.Name) {
-		_, err := keeper.coinKeeper.SendCoins(ctx, msg.Buyer, keeper.GetOwner(ctx, msg.Name), msg.Bid)
-		if err != nil {
-			return sdk.ErrInsufficientCoins("Buyer does not have enough coins").Result()
-		}
-	} else {
-		_, _, err := keeper.coinKeeper.SubtractCoins(ctx, msg.Buyer, msg.Bid)
-		if err != nil {
-			return sdk.ErrInsufficientCoins("Buyer does not have enough coins").Result()
-		}
+	if msg.Sender != re.Owner {
+		return nil, fmt.Errorf("sender %v is not the name owner", msg.Sender)
 	}
-	keeper.SetOwner(ctx, msg.Name, msg.Buyer)
-	keeper.SetPrice(ctx, msg.Name, msg.Bid)
-	return sdk.Result{}
+
+	metadata := &types.MetaData{
+		Owner:    msg.Owner,
+		Resolver: re.Resolver,
+		TTL:      re.TTL,
+	}
+	err = ms.Keeper.SetMetaData(ctx, msg.Name, metadata)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.SetOwnerResponse{}, nil
+}
+
+func (ms MsgServer) SetResolver(goCtx context.Context, msg *types.MsgSetResolver) (*types.SetResolverResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	re, err := ms.GetMetaData(ctx, msg.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	if msg.Sender != re.Owner {
+		return nil, fmt.Errorf("sender %v is not the name owner", msg.Sender)
+	}
+
+	metadata := &types.MetaData{
+		Owner:    re.Owner,
+		Resolver: msg.Resolver,
+		TTL:      re.TTL,
+	}
+	err = ms.Keeper.SetMetaData(ctx, msg.Name, metadata)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.SetResolverResponse{}, nil
+}
+
+func (ms MsgServer) SetTTL(goCtx context.Context, msg *types.MsgSetTTL) (*types.SetTTLResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	re, err := ms.GetMetaData(ctx, msg.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	if msg.Sender != re.Owner {
+		return nil, fmt.Errorf("sender %v is not the name owner", msg.Sender)
+	}
+
+	metadata := &types.MetaData{
+		Owner:    re.Owner,
+		Resolver: re.Resolver,
+		TTL:      msg.TTL,
+	}
+	err = ms.Keeper.SetMetaData(ctx, msg.Name, metadata)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.SetTTLResponse{}, nil
 }

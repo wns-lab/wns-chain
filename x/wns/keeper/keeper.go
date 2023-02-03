@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
@@ -10,12 +9,12 @@ import (
 	"github.com/wns-lab/wns-chain/x/wns/types"
 )
 
+var _ WnsKeeper = Keeper{}
+
 type WnsKeeper interface {
-	SetRecord(sdk.Context, types.Node, types.Record) error
-	IsOwner(sdk.Context, types.Node, string) bool
-	SetNodeOwner(sdk.Context, types.Node, string) error
-	SetResolver(sdk.Context, types.Node, string) error
-	SetTTL(sdk.Context, types.Node, time.Time) error
+	SetMetaData(sdk.Context, string, *types.MetaData) error
+	GetMetaData(sdk.Context, string) (*types.MetaData, error)
+	IsOwner(sdk.Context, string, string) bool
 }
 
 type Keeper struct {
@@ -27,27 +26,32 @@ type Keeper struct {
 	bankKeeper types.BankKeeper
 }
 
-func (k Keeper) SetRecord(ctx sdk.Context, node types.Node, record types.Record) error {
-	if node.IsValid() && record.IsValid() {
-		store := ctx.KVStore(k.storeKey)
-		bz := k.cdc.MustMarshal(record)
-		store.Set(types.NodeToRecordKey(node), bz)
-		return nil
-	}
-
-	return fmt.Errorf("either node or record is invalid")
+func (k Keeper) SetMetaData(ctx sdk.Context, name string, metadata *types.MetaData) error {
+	store := ctx.KVStore(k.storeKey)
+	bz := k.cdc.MustMarshal(metadata)
+	store.Set(types.NameToMetaDataKey(name), bz)
+	return nil
 }
 
-func (k Keeper) IsOwner(ctx sdk.Context, node types.Node, address string) bool {
+func (k Keeper) GetMetaData(ctx sdk.Context, name string) (*types.MetaData, error) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(node)
-	var record *types.Record
-	k.cdc.MustUnmarshal(bz, record)
-	if record == nil {
+	bz := store.Get(types.NameToMetaDataKey(name))
+	if bz == nil {
+		return nil, fmt.Errorf("record not found for name %v", name)
+	}
+
+	var metadata *types.MetaData
+	k.cdc.MustUnmarshal(bz, metadata)
+	return metadata, nil
+}
+
+func (k Keeper) IsOwner(ctx sdk.Context, name string, address string) bool {
+	metadata, err := k.GetMetaData(ctx, name)
+	if err != nil {
 		return false
 	}
 
-	if record.Owner == address {
+	if metadata.Owner == address {
 		return true
 	}
 

@@ -2,16 +2,16 @@ syntax = "proto3";
 package wns;
 
 import "gogoproto/gogo.proto";
-import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/wns-lab/wns-chain/x/wns/types";
 
-message Name {
+message DomainName {
     string name = 1;
+    MetaData metadata = 2;
 }
 
-message Record {
+message MetaData {
     string owner = 1;
     string resolver = 2;
-    google.protobuf.Timestamp ttl = 3;
+    int64 ttl = 3 [(gogoproto.customname) = "TTL"];
 }

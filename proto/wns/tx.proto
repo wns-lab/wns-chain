@@ -5,59 +5,45 @@ package wns;
 
 import "gogoproto/gogo.proto";
 import "wns/wns.proto";
-import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 
 option go_package = "github.com/wns-lab/wns-chain/x/wns/types";
 
 service Msg {
-    rpc SetRecord(SetRecordRequest) returns (SetRecordResponse) {}
-    rpc GetRecord(GetRecordRequest) returns (GetRecordResponse) {}
-    rpc SetOwner(SetOwnerRequest) returns (SetOwnerResponse) {}
-    rpc SetResolver(SetResolverRequest) returns (SetResolverResponse) {}
-    rpc SetTTL(SetTTLRequest) returns (SetTTLResponse) {}
+    rpc SetMetadata(MsgSetMetaData) returns (SetMetaDataResponse) {}
+    rpc SetOwner(MsgSetOwner) returns (SetOwnerResponse) {}
+    rpc SetResolver(MsgSetResolver) returns (SetResolverResponse) {}
+    rpc SetTTL(MsgSetTTL) returns (SetTTLResponse) {}
 }
 
-message SetRecordRequest {
-    Name name = 1;
-    Record record = 2;
+message MsgSetMetaData {
+    string sender = 1;
+    string name = 2;
+    MetaData metadata = 3;
 }
 
-message SetRecordResponse {
-    google.protobuf.Empty empty = 1;
+message SetMetaDataResponse {}
+
+message MsgSetOwner {
+    string sender = 1;
+    string name = 2;
+    string owner = 3;
 }
 
-message GetRecordRequest {
-    Name name = 1;
+message SetOwnerResponse {}
+
+message MsgSetResolver {
+    string sender = 1;
+    string name = 2;
+    string resolver = 3;
 }
 
-message GetRecordResponse {
-    Record record = 1;
+message SetResolverResponse {}
+
+message MsgSetTTL {
+    string sender = 1;
+    string name = 2;
+    int64 ttl = 3 [(gogoproto.customname) = "TTL"];
 }
 
-message SetOwnerRequest {
-    Name name = 1;
-    string owner = 2;
-}
-
-message SetOwnerResponse {
-    google.protobuf.Empty empty = 1;
-}
-
-message SetResolverRequest {
-    Name name = 1;
-    string resolver = 2;
-}
-
-message SetResolverResponse {
-    google.protobuf.Empty empty = 1;
-}
-
-message SetTTLRequest {
-    Name name = 1;
-    google.protobuf.Timestamp ttl = 2;
-}
-
-message SetTTLResponse {
-    google.protobuf.Empty empty = 1;
-}
+message SetTTLResponse {}

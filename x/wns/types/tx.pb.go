@@ -12,8 +12,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
-	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
+	_ "google.golang.org/protobuf/types/known/emptypb"
 	io "io"
 	math "math"
 	math_bits "math/bits"
@@ -30,23 +29,24 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type SetRecordRequest struct {
-	Name   *Name   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Record *Record `protobuf:"bytes,2,opt,name=record,proto3" json:"record,omitempty"`
+type MsgSetMetaData struct {
+	Sender   string    `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	Name     string    `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Metadata *MetaData `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 }
 
-func (m *SetRecordRequest) Reset()         { *m = SetRecordRequest{} }
-func (m *SetRecordRequest) String() string { return proto.CompactTextString(m) }
-func (*SetRecordRequest) ProtoMessage()    {}
-func (*SetRecordRequest) Descriptor() ([]byte, []int) {
+func (m *MsgSetMetaData) Reset()         { *m = MsgSetMetaData{} }
+func (m *MsgSetMetaData) String() string { return proto.CompactTextString(m) }
+func (*MsgSetMetaData) ProtoMessage()    {}
+func (*MsgSetMetaData) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e56a520f64574436, []int{0}
 }
-func (m *SetRecordRequest) XXX_Unmarshal(b []byte) error {
+func (m *MsgSetMetaData) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *SetRecordRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgSetMetaData) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_SetRecordRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgSetMetaData.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -56,48 +56,54 @@ func (m *SetRecordRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, er
 		return b[:n], nil
 	}
 }
-func (m *SetRecordRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SetRecordRequest.Merge(m, src)
+func (m *MsgSetMetaData) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetMetaData.Merge(m, src)
 }
-func (m *SetRecordRequest) XXX_Size() int {
+func (m *MsgSetMetaData) XXX_Size() int {
 	return m.Size()
 }
-func (m *SetRecordRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_SetRecordRequest.DiscardUnknown(m)
+func (m *MsgSetMetaData) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetMetaData.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_SetRecordRequest proto.InternalMessageInfo
+var xxx_messageInfo_MsgSetMetaData proto.InternalMessageInfo
 
-func (m *SetRecordRequest) GetName() *Name {
+func (m *MsgSetMetaData) GetSender() string {
+	if m != nil {
+		return m.Sender
+	}
+	return ""
+}
+
+func (m *MsgSetMetaData) GetName() string {
 	if m != nil {
 		return m.Name
 	}
-	return nil
+	return ""
 }
 
-func (m *SetRecordRequest) GetRecord() *Record {
+func (m *MsgSetMetaData) GetMetadata() *MetaData {
 	if m != nil {
-		return m.Record
+		return m.Metadata
 	}
 	return nil
 }
 
-type SetRecordResponse struct {
-	Empty *emptypb.Empty `protobuf:"bytes,1,opt,name=empty,proto3" json:"empty,omitempty"`
+type SetMetaDataResponse struct {
 }
 
-func (m *SetRecordResponse) Reset()         { *m = SetRecordResponse{} }
-func (m *SetRecordResponse) String() string { return proto.CompactTextString(m) }
-func (*SetRecordResponse) ProtoMessage()    {}
-func (*SetRecordResponse) Descriptor() ([]byte, []int) {
+func (m *SetMetaDataResponse) Reset()         { *m = SetMetaDataResponse{} }
+func (m *SetMetaDataResponse) String() string { return proto.CompactTextString(m) }
+func (*SetMetaDataResponse) ProtoMessage()    {}
+func (*SetMetaDataResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e56a520f64574436, []int{1}
 }
-func (m *SetRecordResponse) XXX_Unmarshal(b []byte) error {
+func (m *SetMetaDataResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *SetRecordResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *SetMetaDataResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_SetRecordResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_SetMetaDataResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -107,41 +113,36 @@ func (m *SetRecordResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
-func (m *SetRecordResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SetRecordResponse.Merge(m, src)
+func (m *SetMetaDataResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SetMetaDataResponse.Merge(m, src)
 }
-func (m *SetRecordResponse) XXX_Size() int {
+func (m *SetMetaDataResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *SetRecordResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_SetRecordResponse.DiscardUnknown(m)
+func (m *SetMetaDataResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_SetMetaDataResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_SetRecordResponse proto.InternalMessageInfo
+var xxx_messageInfo_SetMetaDataResponse proto.InternalMessageInfo
 
-func (m *SetRecordResponse) GetEmpty() *emptypb.Empty {
-	if m != nil {
-		return m.Empty
-	}
-	return nil
+type MsgSetOwner struct {
+	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	Name   string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Owner  string `protobuf:"bytes,3,opt,name=owner,proto3" json:"owner,omitempty"`
 }
 
-type GetRecordRequest struct {
-	Name *Name `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-}
-
-func (m *GetRecordRequest) Reset()         { *m = GetRecordRequest{} }
-func (m *GetRecordRequest) String() string { return proto.CompactTextString(m) }
-func (*GetRecordRequest) ProtoMessage()    {}
-func (*GetRecordRequest) Descriptor() ([]byte, []int) {
+func (m *MsgSetOwner) Reset()         { *m = MsgSetOwner{} }
+func (m *MsgSetOwner) String() string { return proto.CompactTextString(m) }
+func (*MsgSetOwner) ProtoMessage()    {}
+func (*MsgSetOwner) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e56a520f64574436, []int{2}
 }
-func (m *GetRecordRequest) XXX_Unmarshal(b []byte) error {
+func (m *MsgSetOwner) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *GetRecordRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgSetOwner) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_GetRecordRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgSetOwner.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -151,115 +152,33 @@ func (m *GetRecordRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, er
 		return b[:n], nil
 	}
 }
-func (m *GetRecordRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetRecordRequest.Merge(m, src)
+func (m *MsgSetOwner) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetOwner.Merge(m, src)
 }
-func (m *GetRecordRequest) XXX_Size() int {
+func (m *MsgSetOwner) XXX_Size() int {
 	return m.Size()
 }
-func (m *GetRecordRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetRecordRequest.DiscardUnknown(m)
+func (m *MsgSetOwner) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetOwner.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GetRecordRequest proto.InternalMessageInfo
+var xxx_messageInfo_MsgSetOwner proto.InternalMessageInfo
 
-func (m *GetRecordRequest) GetName() *Name {
+func (m *MsgSetOwner) GetSender() string {
+	if m != nil {
+		return m.Sender
+	}
+	return ""
+}
+
+func (m *MsgSetOwner) GetName() string {
 	if m != nil {
 		return m.Name
 	}
-	return nil
+	return ""
 }
 
-type GetRecordResponse struct {
-	Record *Record `protobuf:"bytes,1,opt,name=record,proto3" json:"record,omitempty"`
-}
-
-func (m *GetRecordResponse) Reset()         { *m = GetRecordResponse{} }
-func (m *GetRecordResponse) String() string { return proto.CompactTextString(m) }
-func (*GetRecordResponse) ProtoMessage()    {}
-func (*GetRecordResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e56a520f64574436, []int{3}
-}
-func (m *GetRecordResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *GetRecordResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_GetRecordResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *GetRecordResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetRecordResponse.Merge(m, src)
-}
-func (m *GetRecordResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *GetRecordResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetRecordResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GetRecordResponse proto.InternalMessageInfo
-
-func (m *GetRecordResponse) GetRecord() *Record {
-	if m != nil {
-		return m.Record
-	}
-	return nil
-}
-
-type SetOwnerRequest struct {
-	Name  *Name  `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Owner string `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
-}
-
-func (m *SetOwnerRequest) Reset()         { *m = SetOwnerRequest{} }
-func (m *SetOwnerRequest) String() string { return proto.CompactTextString(m) }
-func (*SetOwnerRequest) ProtoMessage()    {}
-func (*SetOwnerRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e56a520f64574436, []int{4}
-}
-func (m *SetOwnerRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *SetOwnerRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_SetOwnerRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *SetOwnerRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SetOwnerRequest.Merge(m, src)
-}
-func (m *SetOwnerRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *SetOwnerRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_SetOwnerRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_SetOwnerRequest proto.InternalMessageInfo
-
-func (m *SetOwnerRequest) GetName() *Name {
-	if m != nil {
-		return m.Name
-	}
-	return nil
-}
-
-func (m *SetOwnerRequest) GetOwner() string {
+func (m *MsgSetOwner) GetOwner() string {
 	if m != nil {
 		return m.Owner
 	}
@@ -267,14 +186,13 @@ func (m *SetOwnerRequest) GetOwner() string {
 }
 
 type SetOwnerResponse struct {
-	Empty *emptypb.Empty `protobuf:"bytes,1,opt,name=empty,proto3" json:"empty,omitempty"`
 }
 
 func (m *SetOwnerResponse) Reset()         { *m = SetOwnerResponse{} }
 func (m *SetOwnerResponse) String() string { return proto.CompactTextString(m) }
 func (*SetOwnerResponse) ProtoMessage()    {}
 func (*SetOwnerResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e56a520f64574436, []int{5}
+	return fileDescriptor_e56a520f64574436, []int{3}
 }
 func (m *SetOwnerResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -303,30 +221,24 @@ func (m *SetOwnerResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_SetOwnerResponse proto.InternalMessageInfo
 
-func (m *SetOwnerResponse) GetEmpty() *emptypb.Empty {
-	if m != nil {
-		return m.Empty
-	}
-	return nil
+type MsgSetResolver struct {
+	Sender   string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	Name     string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Resolver string `protobuf:"bytes,3,opt,name=resolver,proto3" json:"resolver,omitempty"`
 }
 
-type SetResolverRequest struct {
-	Name     *Name  `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Resolver string `protobuf:"bytes,2,opt,name=resolver,proto3" json:"resolver,omitempty"`
+func (m *MsgSetResolver) Reset()         { *m = MsgSetResolver{} }
+func (m *MsgSetResolver) String() string { return proto.CompactTextString(m) }
+func (*MsgSetResolver) ProtoMessage()    {}
+func (*MsgSetResolver) Descriptor() ([]byte, []int) {
+	return fileDescriptor_e56a520f64574436, []int{4}
 }
-
-func (m *SetResolverRequest) Reset()         { *m = SetResolverRequest{} }
-func (m *SetResolverRequest) String() string { return proto.CompactTextString(m) }
-func (*SetResolverRequest) ProtoMessage()    {}
-func (*SetResolverRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e56a520f64574436, []int{6}
-}
-func (m *SetResolverRequest) XXX_Unmarshal(b []byte) error {
+func (m *MsgSetResolver) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *SetResolverRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgSetResolver) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_SetResolverRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgSetResolver.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -336,26 +248,33 @@ func (m *SetResolverRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
-func (m *SetResolverRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SetResolverRequest.Merge(m, src)
+func (m *MsgSetResolver) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetResolver.Merge(m, src)
 }
-func (m *SetResolverRequest) XXX_Size() int {
+func (m *MsgSetResolver) XXX_Size() int {
 	return m.Size()
 }
-func (m *SetResolverRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_SetResolverRequest.DiscardUnknown(m)
+func (m *MsgSetResolver) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetResolver.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_SetResolverRequest proto.InternalMessageInfo
+var xxx_messageInfo_MsgSetResolver proto.InternalMessageInfo
 
-func (m *SetResolverRequest) GetName() *Name {
+func (m *MsgSetResolver) GetSender() string {
+	if m != nil {
+		return m.Sender
+	}
+	return ""
+}
+
+func (m *MsgSetResolver) GetName() string {
 	if m != nil {
 		return m.Name
 	}
-	return nil
+	return ""
 }
 
-func (m *SetResolverRequest) GetResolver() string {
+func (m *MsgSetResolver) GetResolver() string {
 	if m != nil {
 		return m.Resolver
 	}
@@ -363,14 +282,13 @@ func (m *SetResolverRequest) GetResolver() string {
 }
 
 type SetResolverResponse struct {
-	Empty *emptypb.Empty `protobuf:"bytes,1,opt,name=empty,proto3" json:"empty,omitempty"`
 }
 
 func (m *SetResolverResponse) Reset()         { *m = SetResolverResponse{} }
 func (m *SetResolverResponse) String() string { return proto.CompactTextString(m) }
 func (*SetResolverResponse) ProtoMessage()    {}
 func (*SetResolverResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e56a520f64574436, []int{7}
+	return fileDescriptor_e56a520f64574436, []int{5}
 }
 func (m *SetResolverResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -399,30 +317,24 @@ func (m *SetResolverResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_SetResolverResponse proto.InternalMessageInfo
 
-func (m *SetResolverResponse) GetEmpty() *emptypb.Empty {
-	if m != nil {
-		return m.Empty
-	}
-	return nil
+type MsgSetTTL struct {
+	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	Name   string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	TTL    int64  `protobuf:"varint,3,opt,name=ttl,proto3" json:"ttl,omitempty"`
 }
 
-type SetTTLRequest struct {
-	Name *Name                  `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Ttl  *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=ttl,proto3" json:"ttl,omitempty"`
+func (m *MsgSetTTL) Reset()         { *m = MsgSetTTL{} }
+func (m *MsgSetTTL) String() string { return proto.CompactTextString(m) }
+func (*MsgSetTTL) ProtoMessage()    {}
+func (*MsgSetTTL) Descriptor() ([]byte, []int) {
+	return fileDescriptor_e56a520f64574436, []int{6}
 }
-
-func (m *SetTTLRequest) Reset()         { *m = SetTTLRequest{} }
-func (m *SetTTLRequest) String() string { return proto.CompactTextString(m) }
-func (*SetTTLRequest) ProtoMessage()    {}
-func (*SetTTLRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e56a520f64574436, []int{8}
-}
-func (m *SetTTLRequest) XXX_Unmarshal(b []byte) error {
+func (m *MsgSetTTL) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *SetTTLRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgSetTTL) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_SetTTLRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgSetTTL.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -432,41 +344,47 @@ func (m *SetTTLRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error
 		return b[:n], nil
 	}
 }
-func (m *SetTTLRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SetTTLRequest.Merge(m, src)
+func (m *MsgSetTTL) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetTTL.Merge(m, src)
 }
-func (m *SetTTLRequest) XXX_Size() int {
+func (m *MsgSetTTL) XXX_Size() int {
 	return m.Size()
 }
-func (m *SetTTLRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_SetTTLRequest.DiscardUnknown(m)
+func (m *MsgSetTTL) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetTTL.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_SetTTLRequest proto.InternalMessageInfo
+var xxx_messageInfo_MsgSetTTL proto.InternalMessageInfo
 
-func (m *SetTTLRequest) GetName() *Name {
+func (m *MsgSetTTL) GetSender() string {
+	if m != nil {
+		return m.Sender
+	}
+	return ""
+}
+
+func (m *MsgSetTTL) GetName() string {
 	if m != nil {
 		return m.Name
 	}
-	return nil
+	return ""
 }
 
-func (m *SetTTLRequest) GetTtl() *timestamppb.Timestamp {
+func (m *MsgSetTTL) GetTTL() int64 {
 	if m != nil {
-		return m.Ttl
+		return m.TTL
 	}
-	return nil
+	return 0
 }
 
 type SetTTLResponse struct {
-	Empty *emptypb.Empty `protobuf:"bytes,1,opt,name=empty,proto3" json:"empty,omitempty"`
 }
 
 func (m *SetTTLResponse) Reset()         { *m = SetTTLResponse{} }
 func (m *SetTTLResponse) String() string { return proto.CompactTextString(m) }
 func (*SetTTLResponse) ProtoMessage()    {}
 func (*SetTTLResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e56a520f64574436, []int{9}
+	return fileDescriptor_e56a520f64574436, []int{7}
 }
 func (m *SetTTLResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -495,60 +413,47 @@ func (m *SetTTLResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_SetTTLResponse proto.InternalMessageInfo
 
-func (m *SetTTLResponse) GetEmpty() *emptypb.Empty {
-	if m != nil {
-		return m.Empty
-	}
-	return nil
-}
-
 func init() {
-	proto.RegisterType((*SetRecordRequest)(nil), "wns.SetRecordRequest")
-	proto.RegisterType((*SetRecordResponse)(nil), "wns.SetRecordResponse")
-	proto.RegisterType((*GetRecordRequest)(nil), "wns.GetRecordRequest")
-	proto.RegisterType((*GetRecordResponse)(nil), "wns.GetRecordResponse")
-	proto.RegisterType((*SetOwnerRequest)(nil), "wns.SetOwnerRequest")
+	proto.RegisterType((*MsgSetMetaData)(nil), "wns.MsgSetMetaData")
+	proto.RegisterType((*SetMetaDataResponse)(nil), "wns.SetMetaDataResponse")
+	proto.RegisterType((*MsgSetOwner)(nil), "wns.MsgSetOwner")
 	proto.RegisterType((*SetOwnerResponse)(nil), "wns.SetOwnerResponse")
-	proto.RegisterType((*SetResolverRequest)(nil), "wns.SetResolverRequest")
+	proto.RegisterType((*MsgSetResolver)(nil), "wns.MsgSetResolver")
 	proto.RegisterType((*SetResolverResponse)(nil), "wns.SetResolverResponse")
-	proto.RegisterType((*SetTTLRequest)(nil), "wns.SetTTLRequest")
+	proto.RegisterType((*MsgSetTTL)(nil), "wns.MsgSetTTL")
 	proto.RegisterType((*SetTTLResponse)(nil), "wns.SetTTLResponse")
 }
 
 func init() { proto.RegisterFile("wns/tx.proto", fileDescriptor_e56a520f64574436) }
 
 var fileDescriptor_e56a520f64574436 = []byte{
-	// 476 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x54, 0xc1, 0x6e, 0xd3, 0x40,
-	0x10, 0xb5, 0x1b, 0x1a, 0x35, 0x13, 0x0a, 0xed, 0x36, 0x2d, 0xd1, 0x22, 0x0c, 0x5a, 0x2e, 0x3d,
-	0x14, 0x5b, 0xb4, 0x17, 0x90, 0x10, 0x82, 0x20, 0xf0, 0x05, 0xa8, 0xe4, 0x44, 0x1c, 0x10, 0x17,
-	0x3b, 0x2c, 0x6e, 0x24, 0xdb, 0x6b, 0xbc, 0x1b, 0xdc, 0xfe, 0x05, 0x3f, 0xc3, 0x3f, 0x70, 0xec,
-	0x91, 0x23, 0x4a, 0x7e, 0x04, 0xed, 0x7a, 0xed, 0x24, 0x4e, 0x90, 0xd2, 0x9c, 0x92, 0x99, 0x79,
-	0xef, 0xcd, 0xf3, 0xcc, 0x68, 0xe1, 0x76, 0x9e, 0x70, 0x47, 0x5c, 0xda, 0x69, 0xc6, 0x04, 0x43,
-	0x8d, 0x3c, 0xe1, 0xb8, 0x13, 0xb2, 0x90, 0xa9, 0xd8, 0x91, 0xff, 0x8a, 0x12, 0xde, 0x95, 0xc0,
-	0x3c, 0xe1, 0x3a, 0x7c, 0x18, 0x32, 0x16, 0x46, 0xd4, 0x51, 0x51, 0x30, 0xfe, 0xe6, 0x88, 0x51,
-	0x4c, 0xb9, 0xf0, 0xe3, 0x54, 0x03, 0xee, 0xd7, 0x01, 0x34, 0x4e, 0xc5, 0x55, 0x51, 0x24, 0x9f,
-	0x60, 0xaf, 0x4f, 0x85, 0x47, 0x87, 0x2c, 0xfb, 0xea, 0xd1, 0xef, 0x63, 0xca, 0x05, 0x7a, 0x00,
-	0xb7, 0x12, 0x3f, 0xa6, 0x5d, 0xf3, 0x91, 0x79, 0xdc, 0x3e, 0x6d, 0xd9, 0xb2, 0xd7, 0x47, 0x3f,
-	0xa6, 0x9e, 0x4a, 0xa3, 0xc7, 0xd0, 0xcc, 0x14, 0xbe, 0xbb, 0xa5, 0x00, 0x6d, 0x05, 0xd0, 0x12,
-	0xba, 0x44, 0x5e, 0xc3, 0xfe, 0x9c, 0x2e, 0x4f, 0x59, 0xc2, 0x29, 0x3a, 0x81, 0x6d, 0xd5, 0x5b,
-	0x2b, 0x1f, 0xd9, 0x85, 0x33, 0xbb, 0x74, 0x66, 0xbf, 0x95, 0x55, 0xaf, 0x00, 0x91, 0xa7, 0xb0,
-	0xe7, 0xde, 0xcc, 0x1a, 0x79, 0x06, 0xfb, 0xee, 0x52, 0xd7, 0x99, 0x5f, 0xf3, 0xff, 0x7e, 0xdf,
-	0xc1, 0xdd, 0x3e, 0x15, 0xe7, 0x79, 0x42, 0xb3, 0x35, 0xc7, 0xd0, 0x81, 0x6d, 0x26, 0xe1, 0x6a,
-	0x0a, 0x2d, 0xaf, 0x08, 0xc8, 0x2b, 0x35, 0x4f, 0xad, 0xb3, 0xd1, 0x67, 0x9f, 0x03, 0x52, 0x93,
-	0xe3, 0x2c, 0xfa, 0xb1, 0xb6, 0x19, 0x0c, 0x3b, 0x99, 0x66, 0x68, 0x3f, 0x55, 0x4c, 0xde, 0xc0,
-	0xc1, 0x82, 0xe0, 0x46, 0xae, 0xbe, 0xc0, 0x6e, 0x9f, 0x8a, 0xc1, 0xe0, 0xfd, 0x9a, 0x86, 0x4e,
-	0xa0, 0x21, 0x44, 0xa4, 0x2f, 0x04, 0x2f, 0x69, 0x0f, 0xca, 0x1b, 0xf5, 0x24, 0x8c, 0xbc, 0x84,
-	0x3b, 0xa5, 0xfa, 0x26, 0xee, 0x4e, 0x7f, 0x6d, 0x41, 0xe3, 0x03, 0x0f, 0xd1, 0x0b, 0x68, 0x55,
-	0x57, 0x87, 0x0e, 0x95, 0xa7, 0xfa, 0x75, 0xe3, 0xa3, 0x7a, 0xba, 0xe8, 0x48, 0x0c, 0xc9, 0x76,
-	0x6b, 0x6c, 0x77, 0x35, 0xdb, 0x5d, 0xc1, 0x7e, 0x0e, 0x3b, 0xe5, 0xe6, 0x51, 0xa7, 0xec, 0x31,
-	0x7f, 0x50, 0xf8, 0xb0, 0x96, 0xad, 0xa8, 0x3d, 0x68, 0xcf, 0x6d, 0x08, 0xdd, 0x9b, 0x39, 0x5c,
-	0x38, 0x02, 0xdc, 0x5d, 0x2e, 0x54, 0x1a, 0x67, 0xd0, 0x2c, 0x46, 0x88, 0x50, 0x89, 0x9a, 0x6d,
-	0x0b, 0x1f, 0x2c, 0xe4, 0x4a, 0x52, 0xaf, 0xf7, 0x7b, 0x62, 0x99, 0xd7, 0x13, 0xcb, 0xfc, 0x3b,
-	0xb1, 0xcc, 0x9f, 0x53, 0xcb, 0xb8, 0x9e, 0x5a, 0xc6, 0x9f, 0xa9, 0x65, 0x7c, 0x3e, 0x0e, 0x47,
-	0xe2, 0x62, 0x1c, 0xd8, 0x43, 0x16, 0xcb, 0xb7, 0xe6, 0x49, 0xe4, 0x07, 0xea, 0x77, 0x78, 0xe1,
-	0x8f, 0x12, 0xe7, 0xd2, 0x51, 0x8f, 0xd5, 0x55, 0x4a, 0x79, 0xd0, 0x54, 0x2b, 0x39, 0xfb, 0x17,
-	0x00, 0x00, 0xff, 0xff, 0xa9, 0xbf, 0xdf, 0x8a, 0xc0, 0x04, 0x00, 0x00,
+	// 416 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x93, 0xb1, 0xae, 0xd3, 0x30,
+	0x14, 0x86, 0x13, 0x02, 0xa5, 0x3d, 0xe5, 0x56, 0x95, 0x7b, 0x2f, 0x0a, 0x41, 0x0a, 0x57, 0x99,
+	0xca, 0x40, 0x23, 0x5d, 0xc4, 0xca, 0x50, 0x31, 0xb6, 0xaa, 0x14, 0x32, 0x20, 0x36, 0xa7, 0x35,
+	0x6e, 0xa5, 0xc4, 0x8e, 0x62, 0x97, 0xb4, 0x6f, 0xc1, 0x63, 0x31, 0x76, 0x64, 0x42, 0x28, 0x9d,
+	0x79, 0x07, 0x14, 0xc7, 0x0e, 0xa9, 0x60, 0xe9, 0x54, 0xff, 0xc7, 0xfd, 0xcf, 0xa7, 0xf3, 0x1f,
+	0x07, 0x9e, 0x95, 0x4c, 0x84, 0xf2, 0x30, 0xcb, 0x0b, 0x2e, 0x39, 0x72, 0x4a, 0x26, 0xbc, 0x5b,
+	0xca, 0x29, 0x57, 0x3a, 0xac, 0x4f, 0xcd, 0x95, 0x77, 0x53, 0xff, 0xb1, 0x64, 0x42, 0xcb, 0x97,
+	0x94, 0x73, 0x9a, 0x92, 0x50, 0xa9, 0x64, 0xff, 0x25, 0x24, 0x59, 0x2e, 0x8f, 0xcd, 0x65, 0x40,
+	0x61, 0xb4, 0x14, 0xf4, 0x23, 0x91, 0x4b, 0x22, 0xf1, 0x07, 0x2c, 0x31, 0x7a, 0x0e, 0x3d, 0x41,
+	0xd8, 0x86, 0x14, 0xae, 0x7d, 0x6f, 0x4f, 0x07, 0x91, 0x56, 0x08, 0xc1, 0x63, 0x86, 0x33, 0xe2,
+	0x3e, 0x52, 0x55, 0x75, 0x46, 0xaf, 0xa1, 0x9f, 0x11, 0x89, 0x37, 0x58, 0x62, 0xd7, 0xb9, 0xb7,
+	0xa7, 0xc3, 0x87, 0x9b, 0x59, 0x0d, 0x36, 0xcd, 0xa2, 0xf6, 0x3a, 0xb8, 0x83, 0x49, 0x87, 0x12,
+	0x11, 0x91, 0x73, 0x26, 0x48, 0xb0, 0x82, 0x61, 0xc3, 0x5f, 0x95, 0x8c, 0x14, 0x57, 0xc1, 0x6f,
+	0xe1, 0x09, 0xaf, 0x4d, 0x8a, 0x3c, 0x88, 0x1a, 0x11, 0x20, 0x18, 0x9b, 0x6e, 0x2d, 0xe4, 0x93,
+	0x19, 0x32, 0x22, 0x82, 0xa7, 0x5f, 0xaf, 0xe4, 0x78, 0xd0, 0x2f, 0xb4, 0x4f, 0xa3, 0x5a, 0xad,
+	0xa7, 0x32, 0x6d, 0x5b, 0x60, 0x04, 0x83, 0x06, 0x18, 0xc7, 0x8b, 0xab, 0x58, 0x2f, 0xc0, 0x91,
+	0x32, 0x55, 0x18, 0x67, 0xfe, 0xb4, 0xfa, 0xf9, 0xca, 0x89, 0xe3, 0x45, 0x54, 0xd7, 0x82, 0x31,
+	0x8c, 0x9a, 0x86, 0x86, 0xf2, 0xf0, 0xdb, 0x06, 0x67, 0x29, 0x28, 0x7a, 0x0f, 0x43, 0x1d, 0x6d,
+	0x9d, 0x34, 0x9a, 0x34, 0x2b, 0xb8, 0xd8, 0xaa, 0xe7, 0xaa, 0xe2, 0xff, 0x36, 0x60, 0xa1, 0x77,
+	0xd0, 0x6f, 0x17, 0x30, 0xee, 0x98, 0x55, 0xc5, 0xbb, 0x33, 0xce, 0xcb, 0x4c, 0x2d, 0x8d, 0x6d,
+	0x23, 0xed, 0x62, 0x4d, 0xf1, 0x2f, 0xf6, 0x9f, 0x88, 0x2c, 0x14, 0x42, 0x4f, 0x27, 0x34, 0xea,
+	0x58, 0xe3, 0x78, 0xe1, 0x4d, 0x8c, 0xab, 0x33, 0x6d, 0x60, 0xcd, 0xe7, 0xdf, 0x2b, 0xdf, 0x3e,
+	0x55, 0xbe, 0xfd, 0xab, 0xf2, 0xed, 0x6f, 0x67, 0xdf, 0x3a, 0x9d, 0x7d, 0xeb, 0xc7, 0xd9, 0xb7,
+	0x3e, 0x4f, 0xe9, 0x4e, 0x6e, 0xf7, 0xc9, 0x6c, 0xcd, 0xb3, 0xfa, 0xe1, 0xbf, 0x49, 0x71, 0xa2,
+	0x7e, 0xd7, 0x5b, 0xbc, 0x63, 0xe1, 0x21, 0x54, 0x5f, 0xce, 0x31, 0x27, 0x22, 0xe9, 0xa9, 0x67,
+	0xff, 0xf6, 0x4f, 0x00, 0x00, 0x00, 0xff, 0xff, 0xd3, 0x9d, 0x77, 0xec, 0x4d, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -563,11 +468,10 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
-	SetRecord(ctx context.Context, in *SetRecordRequest, opts ...grpc.CallOption) (*SetRecordResponse, error)
-	GetRecord(ctx context.Context, in *GetRecordRequest, opts ...grpc.CallOption) (*GetRecordResponse, error)
-	SetOwner(ctx context.Context, in *SetOwnerRequest, opts ...grpc.CallOption) (*SetOwnerResponse, error)
-	SetResolver(ctx context.Context, in *SetResolverRequest, opts ...grpc.CallOption) (*SetResolverResponse, error)
-	SetTTL(ctx context.Context, in *SetTTLRequest, opts ...grpc.CallOption) (*SetTTLResponse, error)
+	SetMetadata(ctx context.Context, in *MsgSetMetaData, opts ...grpc.CallOption) (*SetMetaDataResponse, error)
+	SetOwner(ctx context.Context, in *MsgSetOwner, opts ...grpc.CallOption) (*SetOwnerResponse, error)
+	SetResolver(ctx context.Context, in *MsgSetResolver, opts ...grpc.CallOption) (*SetResolverResponse, error)
+	SetTTL(ctx context.Context, in *MsgSetTTL, opts ...grpc.CallOption) (*SetTTLResponse, error)
 }
 
 type msgClient struct {
@@ -578,25 +482,16 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
 }
 
-func (c *msgClient) SetRecord(ctx context.Context, in *SetRecordRequest, opts ...grpc.CallOption) (*SetRecordResponse, error) {
-	out := new(SetRecordResponse)
-	err := c.cc.Invoke(ctx, "/wns.Msg/SetRecord", in, out, opts...)
+func (c *msgClient) SetMetadata(ctx context.Context, in *MsgSetMetaData, opts ...grpc.CallOption) (*SetMetaDataResponse, error) {
+	out := new(SetMetaDataResponse)
+	err := c.cc.Invoke(ctx, "/wns.Msg/SetMetadata", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) GetRecord(ctx context.Context, in *GetRecordRequest, opts ...grpc.CallOption) (*GetRecordResponse, error) {
-	out := new(GetRecordResponse)
-	err := c.cc.Invoke(ctx, "/wns.Msg/GetRecord", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) SetOwner(ctx context.Context, in *SetOwnerRequest, opts ...grpc.CallOption) (*SetOwnerResponse, error) {
+func (c *msgClient) SetOwner(ctx context.Context, in *MsgSetOwner, opts ...grpc.CallOption) (*SetOwnerResponse, error) {
 	out := new(SetOwnerResponse)
 	err := c.cc.Invoke(ctx, "/wns.Msg/SetOwner", in, out, opts...)
 	if err != nil {
@@ -605,7 +500,7 @@ func (c *msgClient) SetOwner(ctx context.Context, in *SetOwnerRequest, opts ...g
 	return out, nil
 }
 
-func (c *msgClient) SetResolver(ctx context.Context, in *SetResolverRequest, opts ...grpc.CallOption) (*SetResolverResponse, error) {
+func (c *msgClient) SetResolver(ctx context.Context, in *MsgSetResolver, opts ...grpc.CallOption) (*SetResolverResponse, error) {
 	out := new(SetResolverResponse)
 	err := c.cc.Invoke(ctx, "/wns.Msg/SetResolver", in, out, opts...)
 	if err != nil {
@@ -614,7 +509,7 @@ func (c *msgClient) SetResolver(ctx context.Context, in *SetResolverRequest, opt
 	return out, nil
 }
 
-func (c *msgClient) SetTTL(ctx context.Context, in *SetTTLRequest, opts ...grpc.CallOption) (*SetTTLResponse, error) {
+func (c *msgClient) SetTTL(ctx context.Context, in *MsgSetTTL, opts ...grpc.CallOption) (*SetTTLResponse, error) {
 	out := new(SetTTLResponse)
 	err := c.cc.Invoke(ctx, "/wns.Msg/SetTTL", in, out, opts...)
 	if err != nil {
@@ -625,30 +520,26 @@ func (c *msgClient) SetTTL(ctx context.Context, in *SetTTLRequest, opts ...grpc.
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
-	SetRecord(context.Context, *SetRecordRequest) (*SetRecordResponse, error)
-	GetRecord(context.Context, *GetRecordRequest) (*GetRecordResponse, error)
-	SetOwner(context.Context, *SetOwnerRequest) (*SetOwnerResponse, error)
-	SetResolver(context.Context, *SetResolverRequest) (*SetResolverResponse, error)
-	SetTTL(context.Context, *SetTTLRequest) (*SetTTLResponse, error)
+	SetMetadata(context.Context, *MsgSetMetaData) (*SetMetaDataResponse, error)
+	SetOwner(context.Context, *MsgSetOwner) (*SetOwnerResponse, error)
+	SetResolver(context.Context, *MsgSetResolver) (*SetResolverResponse, error)
+	SetTTL(context.Context, *MsgSetTTL) (*SetTTLResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
 type UnimplementedMsgServer struct {
 }
 
-func (*UnimplementedMsgServer) SetRecord(ctx context.Context, req *SetRecordRequest) (*SetRecordResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SetRecord not implemented")
+func (*UnimplementedMsgServer) SetMetadata(ctx context.Context, req *MsgSetMetaData) (*SetMetaDataResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetMetadata not implemented")
 }
-func (*UnimplementedMsgServer) GetRecord(ctx context.Context, req *GetRecordRequest) (*GetRecordResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetRecord not implemented")
-}
-func (*UnimplementedMsgServer) SetOwner(ctx context.Context, req *SetOwnerRequest) (*SetOwnerResponse, error) {
+func (*UnimplementedMsgServer) SetOwner(ctx context.Context, req *MsgSetOwner) (*SetOwnerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetOwner not implemented")
 }
-func (*UnimplementedMsgServer) SetResolver(ctx context.Context, req *SetResolverRequest) (*SetResolverResponse, error) {
+func (*UnimplementedMsgServer) SetResolver(ctx context.Context, req *MsgSetResolver) (*SetResolverResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetResolver not implemented")
 }
-func (*UnimplementedMsgServer) SetTTL(ctx context.Context, req *SetTTLRequest) (*SetTTLResponse, error) {
+func (*UnimplementedMsgServer) SetTTL(ctx context.Context, req *MsgSetTTL) (*SetTTLResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetTTL not implemented")
 }
 
@@ -656,44 +547,26 @@ func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
 }
 
-func _Msg_SetRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SetRecordRequest)
+func _Msg_SetMetadata_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgSetMetaData)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).SetRecord(ctx, in)
+		return srv.(MsgServer).SetMetadata(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/wns.Msg/SetRecord",
+		FullMethod: "/wns.Msg/SetMetadata",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).SetRecord(ctx, req.(*SetRecordRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_GetRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetRecordRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).GetRecord(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/wns.Msg/GetRecord",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).GetRecord(ctx, req.(*GetRecordRequest))
+		return srv.(MsgServer).SetMetadata(ctx, req.(*MsgSetMetaData))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Msg_SetOwner_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SetOwnerRequest)
+	in := new(MsgSetOwner)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -705,13 +578,13 @@ func _Msg_SetOwner_Handler(srv interface{}, ctx context.Context, dec func(interf
 		FullMethod: "/wns.Msg/SetOwner",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).SetOwner(ctx, req.(*SetOwnerRequest))
+		return srv.(MsgServer).SetOwner(ctx, req.(*MsgSetOwner))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Msg_SetResolver_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SetResolverRequest)
+	in := new(MsgSetResolver)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -723,13 +596,13 @@ func _Msg_SetResolver_Handler(srv interface{}, ctx context.Context, dec func(int
 		FullMethod: "/wns.Msg/SetResolver",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).SetResolver(ctx, req.(*SetResolverRequest))
+		return srv.(MsgServer).SetResolver(ctx, req.(*MsgSetResolver))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Msg_SetTTL_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SetTTLRequest)
+	in := new(MsgSetTTL)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -741,7 +614,7 @@ func _Msg_SetTTL_Handler(srv interface{}, ctx context.Context, dec func(interfac
 		FullMethod: "/wns.Msg/SetTTL",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).SetTTL(ctx, req.(*SetTTLRequest))
+		return srv.(MsgServer).SetTTL(ctx, req.(*MsgSetTTL))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -751,12 +624,8 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "SetRecord",
-			Handler:    _Msg_SetRecord_Handler,
-		},
-		{
-			MethodName: "GetRecord",
-			Handler:    _Msg_GetRecord_Handler,
+			MethodName: "SetMetadata",
+			Handler:    _Msg_SetMetadata_Handler,
 		},
 		{
 			MethodName: "SetOwner",
@@ -775,7 +644,7 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	Metadata: "wns/tx.proto",
 }
 
-func (m *SetRecordRequest) Marshal() (dAtA []byte, err error) {
+func (m *MsgSetMetaData) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -785,44 +654,46 @@ func (m *SetRecordRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *SetRecordRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgSetMetaData) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *SetRecordRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgSetMetaData) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Record != nil {
+	if m.Metadata != nil {
 		{
-			size, err := m.Record.MarshalToSizedBuffer(dAtA[:i])
+			size, err := m.Metadata.MarshalToSizedBuffer(dAtA[:i])
 			if err != nil {
 				return 0, err
 			}
 			i -= size
 			i = encodeVarintTx(dAtA, i, uint64(size))
 		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Name)))
 		i--
 		dAtA[i] = 0x12
 	}
-	if m.Name != nil {
-		{
-			size, err := m.Name.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintTx(dAtA, i, uint64(size))
-		}
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
 		i--
 		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *SetRecordResponse) Marshal() (dAtA []byte, err error) {
+func (m *SetMetaDataResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -832,32 +703,20 @@ func (m *SetRecordResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *SetRecordResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *SetMetaDataResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *SetRecordResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *SetMetaDataResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Empty != nil {
-		{
-			size, err := m.Empty.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintTx(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0xa
-	}
 	return len(dAtA) - i, nil
 }
 
-func (m *GetRecordRequest) Marshal() (dAtA []byte, err error) {
+func (m *MsgSetOwner) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -867,82 +726,12 @@ func (m *GetRecordRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *GetRecordRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgSetOwner) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *GetRecordRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Name != nil {
-		{
-			size, err := m.Name.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintTx(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *GetRecordResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *GetRecordResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *GetRecordResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Record != nil {
-		{
-			size, err := m.Record.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintTx(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *SetOwnerRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *SetOwnerRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *SetOwnerRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgSetOwner) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -952,17 +741,19 @@ func (m *SetOwnerRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Owner)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Owner)))
 		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Name)))
+		i--
 		dAtA[i] = 0x12
 	}
-	if m.Name != nil {
-		{
-			size, err := m.Name.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintTx(dAtA, i, uint64(size))
-		}
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -989,22 +780,10 @@ func (m *SetOwnerResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.Empty != nil {
-		{
-			size, err := m.Empty.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintTx(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0xa
-	}
 	return len(dAtA) - i, nil
 }
 
-func (m *SetResolverRequest) Marshal() (dAtA []byte, err error) {
+func (m *MsgSetResolver) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1014,12 +793,12 @@ func (m *SetResolverRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *SetResolverRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgSetResolver) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *SetResolverRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgSetResolver) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1029,17 +808,19 @@ func (m *SetResolverRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Resolver)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Resolver)))
 		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Name)))
+		i--
 		dAtA[i] = 0x12
 	}
-	if m.Name != nil {
-		{
-			size, err := m.Name.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintTx(dAtA, i, uint64(size))
-		}
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1066,22 +847,10 @@ func (m *SetResolverResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.Empty != nil {
-		{
-			size, err := m.Empty.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintTx(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0xa
-	}
 	return len(dAtA) - i, nil
 }
 
-func (m *SetTTLRequest) Marshal() (dAtA []byte, err error) {
+func (m *MsgSetTTL) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1091,37 +860,32 @@ func (m *SetTTLRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *SetTTLRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgSetTTL) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *SetTTLRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgSetTTL) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Ttl != nil {
-		{
-			size, err := m.Ttl.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintTx(dAtA, i, uint64(size))
-		}
+	if m.TTL != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.TTL))
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Name)))
 		i--
 		dAtA[i] = 0x12
 	}
-	if m.Name != nil {
-		{
-			size, err := m.Name.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintTx(dAtA, i, uint64(size))
-		}
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1148,18 +912,6 @@ func (m *SetTTLResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.Empty != nil {
-		{
-			size, err := m.Empty.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintTx(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0xa
-	}
 	return len(dAtA) - i, nil
 }
 
@@ -1174,70 +926,48 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *SetRecordRequest) Size() (n int) {
+func (m *MsgSetMetaData) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.Name != nil {
-		l = m.Name.Size()
+	l = len(m.Sender)
+	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	if m.Record != nil {
-		l = m.Record.Size()
+	l = len(m.Name)
+	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	return n
-}
-
-func (m *SetRecordResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Empty != nil {
-		l = m.Empty.Size()
+	if m.Metadata != nil {
+		l = m.Metadata.Size()
 		n += 1 + l + sovTx(uint64(l))
 	}
 	return n
 }
 
-func (m *GetRecordRequest) Size() (n int) {
+func (m *SetMetaDataResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.Name != nil {
-		l = m.Name.Size()
-		n += 1 + l + sovTx(uint64(l))
-	}
 	return n
 }
 
-func (m *GetRecordResponse) Size() (n int) {
+func (m *MsgSetOwner) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.Record != nil {
-		l = m.Record.Size()
+	l = len(m.Sender)
+	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	return n
-}
-
-func (m *SetOwnerRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Name != nil {
-		l = m.Name.Size()
+	l = len(m.Name)
+	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
 	l = len(m.Owner)
@@ -1253,21 +983,21 @@ func (m *SetOwnerResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.Empty != nil {
-		l = m.Empty.Size()
-		n += 1 + l + sovTx(uint64(l))
-	}
 	return n
 }
 
-func (m *SetResolverRequest) Size() (n int) {
+func (m *MsgSetResolver) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.Name != nil {
-		l = m.Name.Size()
+	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Name)
+	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
 	l = len(m.Resolver)
@@ -1283,26 +1013,25 @@ func (m *SetResolverResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.Empty != nil {
-		l = m.Empty.Size()
-		n += 1 + l + sovTx(uint64(l))
-	}
 	return n
 }
 
-func (m *SetTTLRequest) Size() (n int) {
+func (m *MsgSetTTL) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.Name != nil {
-		l = m.Name.Size()
+	l = len(m.Sender)
+	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	if m.Ttl != nil {
-		l = m.Ttl.Size()
+	l = len(m.Name)
+	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.TTL != 0 {
+		n += 1 + sovTx(uint64(m.TTL))
 	}
 	return n
 }
@@ -1313,10 +1042,6 @@ func (m *SetTTLResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.Empty != nil {
-		l = m.Empty.Size()
-		n += 1 + l + sovTx(uint64(l))
-	}
 	return n
 }
 
@@ -1326,7 +1051,7 @@ func sovTx(x uint64) (n int) {
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *SetRecordRequest) Unmarshal(dAtA []byte) error {
+func (m *MsgSetMetaData) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1349,17 +1074,17 @@ func (m *SetRecordRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: SetRecordRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgSetMetaData: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SetRecordRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgSetMetaData: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
 			}
-			var msglen int
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTx
@@ -1369,204 +1094,60 @@ func (m *SetRecordRequest) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= int(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			if msglen < 0 {
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
 				return ErrInvalidLengthTx
 			}
-			postIndex := iNdEx + msglen
+			postIndex := iNdEx + intStringLen
 			if postIndex < 0 {
 				return ErrInvalidLengthTx
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Name == nil {
-				m.Name = &Name{}
-			}
-			if err := m.Name.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Record", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Record == nil {
-				m.Record = &Record{}
-			}
-			if err := m.Record.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *SetRecordResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: SetRecordResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SetRecordResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Empty", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Empty == nil {
-				m.Empty = &emptypb.Empty{}
-			}
-			if err := m.Empty.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *GetRecordRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: GetRecordRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GetRecordRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
 			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Metadata", wireType)
+			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
@@ -1592,10 +1173,10 @@ func (m *GetRecordRequest) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Name == nil {
-				m.Name = &Name{}
+			if m.Metadata == nil {
+				m.Metadata = &MetaData{}
 			}
-			if err := m.Name.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.Metadata.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -1620,7 +1201,7 @@ func (m *GetRecordRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *GetRecordResponse) Unmarshal(dAtA []byte) error {
+func (m *SetMetaDataResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1643,48 +1224,12 @@ func (m *GetRecordResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: GetRecordResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: SetMetaDataResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GetRecordResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: SetMetaDataResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Record", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Record == nil {
-				m.Record = &Record{}
-			}
-			if err := m.Record.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -1706,7 +1251,7 @@ func (m *GetRecordResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *SetOwnerRequest) Unmarshal(dAtA []byte) error {
+func (m *MsgSetOwner) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1729,17 +1274,17 @@ func (m *SetOwnerRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: SetOwnerRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgSetOwner: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SetOwnerRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgSetOwner: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
 			}
-			var msglen int
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTx
@@ -1749,29 +1294,57 @@ func (m *SetOwnerRequest) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= int(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			if msglen < 0 {
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
 				return ErrInvalidLengthTx
 			}
-			postIndex := iNdEx + msglen
+			postIndex := iNdEx + intStringLen
 			if postIndex < 0 {
 				return ErrInvalidLengthTx
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Name == nil {
-				m.Name = &Name{}
-			}
-			if err := m.Name.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
 			}
@@ -1853,42 +1426,6 @@ func (m *SetOwnerResponse) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: SetOwnerResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Empty", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Empty == nil {
-				m.Empty = &emptypb.Empty{}
-			}
-			if err := m.Empty.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -1910,7 +1447,7 @@ func (m *SetOwnerResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *SetResolverRequest) Unmarshal(dAtA []byte) error {
+func (m *MsgSetResolver) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1933,17 +1470,17 @@ func (m *SetResolverRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: SetResolverRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgSetResolver: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SetResolverRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgSetResolver: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
 			}
-			var msglen int
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTx
@@ -1953,29 +1490,57 @@ func (m *SetResolverRequest) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= int(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			if msglen < 0 {
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
 				return ErrInvalidLengthTx
 			}
-			postIndex := iNdEx + msglen
+			postIndex := iNdEx + intStringLen
 			if postIndex < 0 {
 				return ErrInvalidLengthTx
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Name == nil {
-				m.Name = &Name{}
-			}
-			if err := m.Name.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Resolver", wireType)
 			}
@@ -2057,42 +1622,6 @@ func (m *SetResolverResponse) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: SetResolverResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Empty", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Empty == nil {
-				m.Empty = &emptypb.Empty{}
-			}
-			if err := m.Empty.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -2114,7 +1643,7 @@ func (m *SetResolverResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *SetTTLRequest) Unmarshal(dAtA []byte) error {
+func (m *MsgSetTTL) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2137,17 +1666,17 @@ func (m *SetTTLRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: SetTTLRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgSetTTL: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SetTTLRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgSetTTL: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
 			}
-			var msglen int
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTx
@@ -2157,33 +1686,29 @@ func (m *SetTTLRequest) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= int(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			if msglen < 0 {
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
 				return ErrInvalidLengthTx
 			}
-			postIndex := iNdEx + msglen
+			postIndex := iNdEx + intStringLen
 			if postIndex < 0 {
 				return ErrInvalidLengthTx
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Name == nil {
-				m.Name = &Name{}
-			}
-			if err := m.Name.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Ttl", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
 			}
-			var msglen int
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTx
@@ -2193,28 +1718,43 @@ func (m *SetTTLRequest) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= int(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			if msglen < 0 {
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
 				return ErrInvalidLengthTx
 			}
-			postIndex := iNdEx + msglen
+			postIndex := iNdEx + intStringLen
 			if postIndex < 0 {
 				return ErrInvalidLengthTx
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Ttl == nil {
-				m.Ttl = &timestamppb.Timestamp{}
-			}
-			if err := m.Ttl.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
+			m.Name = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TTL", wireType)
+			}
+			m.TTL = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.TTL |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -2265,42 +1805,6 @@ func (m *SetTTLResponse) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: SetTTLResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Empty", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Empty == nil {
-				m.Empty = &emptypb.Empty{}
-			}
-			if err := m.Empty.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
