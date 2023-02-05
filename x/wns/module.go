@@ -26,7 +26,8 @@ import (
 )
 
 const (
-	consensusVersion uint64 = 1
+	ExperimentalFlag = "unsafe-experimental"
+	ConsensusVersion = 1
 )
 
 var (
@@ -38,6 +39,11 @@ var (
 // AppModuleBasic defines the basic application module used by the wns module.
 type AppModuleBasic struct {
 	cdc codec.Codec
+}
+
+// AddModuleInitFlags implements servertypes.ModuleInitFlags interface.
+func AddModuleInitFlags(startCmd *cobra.Command) {
+	startCmd.Flags().Bool(ExperimentalFlag, false, "Start the node with experimental features")
 }
 
 // Name returns the staking module's name.
@@ -163,7 +169,7 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 }
 
 // ConsensusVersion implements AppModule/ConsensusVersion.
-func (AppModule) ConsensusVersion() uint64 { return consensusVersion }
+func (AppModule) ConsensusVersion() uint64 { return ConsensusVersion }
 
 // BeginBlock returns the begin blocker for the staking module.
 func (am AppModule) BeginBlock(ctx sdk.Context, _ abci.RequestBeginBlock) {}

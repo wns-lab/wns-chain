@@ -20,12 +20,6 @@ func (msg MsgSetMetaData) ValidateBasic() error {
 		return fmt.Errorf("invalid name %v or record %v", msg.Name, msg.Metadata)
 	}
 
-		for _,c := rangs msg.Name {
-			if !(c >= 'a' && c <= 'z') || !(c >= 'A' && c <= 'Z') || !(c >= '0' && c <= '9') {
-				return sdk.ErrUnknownRequest("The name does not match the character set limit, the character set is A-Za-z0-9. ")
-			}
-		}
-
 	return nil
 }
 
@@ -75,4 +69,3 @@ func (msg MsgSetTTL) ValidateBasic() error {
 func (msg MsgSetTTL) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{sdk.AccAddress(msg.Sender)}
 }
-
