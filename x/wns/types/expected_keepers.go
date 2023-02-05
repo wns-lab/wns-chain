@@ -5,9 +5,10 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
-type AuthKeeper interface {
+type AccountKeeper interface {
 	GetAccount(sdk.Context, sdk.AccAddress) authtypes.AccountI
 	SetAccount(sdk.Context, authtypes.AccountI)
+	GetModuleAddress(name string) sdk.AccAddress
 }
 
 type BankKeeper interface {

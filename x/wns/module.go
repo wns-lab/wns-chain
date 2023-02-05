@@ -4,27 +4,20 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"sort"
+	"math/rand"
 
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/cosmos/cosmos-sdk/x/gov/client/cli"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/cosmos/cosmos-sdk/x/staking/exported"
 	"github.com/evmos/ethermint/x/evm/simulation"
+	"github.com/wns-lab/wns-chain/x/wns/client/cli"
 
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
-	"golang.org/x/exp/maps"
 
-	modulev1 "cosmossdk.io/api/cosmos/staking/module/v1"
 	"cosmossdk.io/core/appmodule"
-	"cosmossdk.io/depinject"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
-	store "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
@@ -38,6 +31,7 @@ const (
 
 var (
 	_ module.AppModuleBasic      = AppModuleBasic{}
+	_ module.AppModule           = AppModule{}
 	_ module.AppModuleSimulation = AppModule{}
 )
 
@@ -69,12 +63,12 @@ func (AppModuleBasic) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
 
 // ValidateGenesis performs genesis state validation for the staking module.
 func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncodingConfig, bz json.RawMessage) error {
-	var data types.GenesisState
-	if err := cdc.UnmarshalJSON(bz, &data); err != nil {
+	var genesis types.GenesisState
+	if err := cdc.UnmarshalJSON(bz, &genesis); err != nil {
 		return fmt.Errorf("failed to unmarshal %s genesis state: %w", types.ModuleName, err)
 	}
 
-	return ValidateGenesis(&data)
+	return types.ValidateGenesis(&genesis)
 }
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the staking module.
@@ -84,12 +78,12 @@ func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *g
 	}
 }
 
-// GetTxCmd returns the root tx command for the staking module.
+// GetTxCmd returns the root tx command for the wns module.
 func (AppModuleBasic) GetTxCmd() *cobra.Command {
-	return cli.NewTxCmd()
+	return cli.GetTxCmd()
 }
 
-// GetQueryCmd returns no root query command for the staking module.
+// GetQueryCmd returns no root query command for the wns module.
 func (AppModuleBasic) GetQueryCmd() *cobra.Command {
 	return cli.GetQueryCmd()
 }
@@ -98,28 +92,23 @@ func (AppModuleBasic) GetQueryCmd() *cobra.Command {
 type AppModule struct {
 	AppModuleBasic
 
-	keeper        *keeper.Keeper
+	keeper        keeper.Keeper
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
-
-	// legacySubspace is used solely for migration of x/params managed parameters
-	legacySubspace exported.Subspace
 }
 
 // NewAppModule creates a new AppModule object
 func NewAppModule(
 	cdc codec.Codec,
-	keeper *keeper.Keeper,
+	keeper keeper.Keeper,
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
-	ls exported.Subspace,
 ) AppModule {
 	return AppModule{
 		AppModuleBasic: AppModuleBasic{cdc: cdc},
 		keeper:         keeper,
 		accountKeeper:  ak,
 		bankKeeper:     bk,
-		legacySubspace: ls,
 	}
 }
 
@@ -136,9 +125,20 @@ func (AppModule) Name() string {
 	return types.ModuleName
 }
 
+// Route returns the message routing key for the wns module.
+func (am AppModule) Route() sdk.Route {
+	return sdk.NewRoute(types.RouterKey, nil)
+}
+
 // RegisterInvariants registers the staking module invariants.
-func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {
-	keeper.RegisterInvariants(ir, am.keeper)
+func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {}
+
+// QuerierRoute returns the route we respond to for abci queries
+func (AppModule) QuerierRoute() string { return "" }
+
+// LegacyQuerierHandler returns the wns module sdk.Querier.
+func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
+	return nil
 }
 
 // RegisterServices registers module services.
@@ -146,26 +146,14 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper))
 	querier := keeper.Querier{Keeper: am.keeper}
 	types.RegisterQueryServer(cfg.QueryServer(), querier)
-
-	m := keeper.NewMigrator(am.keeper, am.legacySubspace)
-	if err := cfg.RegisterMigration(types.ModuleName, 1, m.Migrate1to2); err != nil {
-		panic(fmt.Sprintf("failed to migrate x/%s from version 1 to 2: %v", types.ModuleName, err))
-	}
-	if err := cfg.RegisterMigration(types.ModuleName, 2, m.Migrate2to3); err != nil {
-		panic(fmt.Sprintf("failed to migrate x/%s from version 2 to 3: %v", types.ModuleName, err))
-	}
-	if err := cfg.RegisterMigration(types.ModuleName, 3, m.Migrate3to4); err != nil {
-		panic(fmt.Sprintf("failed to migrate x/%s from version 3 to 4: %v", types.ModuleName, err))
-	}
 }
 
 // InitGenesis performs genesis initialization for the staking module.
 func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.RawMessage) []abci.ValidatorUpdate {
 	var genesisState types.GenesisState
-
 	cdc.MustUnmarshalJSON(data, &genesisState)
-
-	return am.keeper.InitGenesis(ctx, &genesisState)
+	am.keeper.InitGenesis(ctx, &genesisState)
+	return []abci.ValidatorUpdate{}
 }
 
 // ExportGenesis returns the exported genesis state as raw bytes for the staking
@@ -178,125 +166,40 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 func (AppModule) ConsensusVersion() uint64 { return consensusVersion }
 
 // BeginBlock returns the begin blocker for the staking module.
-func (am AppModule) BeginBlock(ctx sdk.Context, _ abci.RequestBeginBlock) {
-	BeginBlocker(ctx, am.keeper)
-}
+func (am AppModule) BeginBlock(ctx sdk.Context, _ abci.RequestBeginBlock) {}
 
 // EndBlock returns the end blocker for the staking module. It returns no validator
 // updates.
 func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
-	return EndBlocker(ctx, am.keeper)
+	return []abci.ValidatorUpdate{}
 }
 
-func init() {
-	appmodule.Register(
-		&modulev1.Module{},
-		appmodule.Provide(ProvideModule),
-		appmodule.Invoke(InvokeSetStakingHooks),
-	)
-}
-
-//nolint:revive
-type StakingInputs struct {
-	depinject.In
-
-	Config        *modulev1.Module
-	AccountKeeper types.AccountKeeper
-	BankKeeper    types.BankKeeper
-	Cdc           codec.Codec
-	Key           *store.KVStoreKey
-
-	// LegacySubspace is used solely for migration of x/params managed parameters
-	LegacySubspace exported.Subspace
-}
-
-// Dependency Injection Outputs
-//
-//nolint:revive
-type StakingOutputs struct {
-	depinject.Out
-
-	StakingKeeper *keeper.Keeper
-	Module        appmodule.AppModule
-}
-
-func ProvideModule(in StakingInputs) StakingOutputs {
-	// default to governance authority if not provided
-	authority := authtypes.NewModuleAddress(govtypes.ModuleName)
-	if in.Config.Authority != "" {
-		authority = authtypes.NewModuleAddressOrBech32Address(in.Config.Authority)
-	}
-
-	k := keeper.NewKeeper(
-		in.Cdc,
-		in.Key,
-		in.AccountKeeper,
-		in.BankKeeper,
-		authority.String(),
-	)
-	m := NewAppModule(in.Cdc, k, in.AccountKeeper, in.BankKeeper, in.LegacySubspace)
-	return StakingOutputs{StakingKeeper: k, Module: m}
-}
-
-func InvokeSetStakingHooks(
-	config *modulev1.Module,
-	keeper *keeper.Keeper,
-	stakingHooks map[string]types.StakingHooksWrapper,
-) error {
-	// all arguments to invokers are optional
-	if keeper == nil || config == nil {
-		return nil
-	}
-
-	modNames := maps.Keys(stakingHooks)
-	order := config.HooksOrder
-	if len(order) == 0 {
-		order = modNames
-		sort.Strings(order)
-	}
-
-	if len(order) != len(modNames) {
-		return fmt.Errorf("len(hooks_order: %v) != len(hooks modules: %v)", order, modNames)
-	}
-
-	if len(modNames) == 0 {
-		return nil
-	}
-
-	var multiHooks types.MultiStakingHooks
-	for _, modName := range order {
-		hook, ok := stakingHooks[modName]
-		if !ok {
-			return fmt.Errorf("can't find staking hooks for module %s", modName)
-		}
-
-		multiHooks = append(multiHooks, hook)
-	}
-
-	keeper.SetHooks(multiHooks)
-	return nil
-}
+// ____________________________________________________________________________
 
 // AppModuleSimulation functions
 
-// GenerateGenesisState creates a randomized GenState of the staking module.
+// GenerateGenesisState creates a randomized GenState of the nft module.
 func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 	simulation.RandomizedGenState(simState)
 }
 
-// ProposalContents doesn't return any content functions for governance proposals.
-func (AppModule) ProposalContents(simState module.SimulationState) []simtypes.WeightedProposalContent {
+// ProposalContents returns all the nft content functions used to
+// simulate governance proposals.
+func (am AppModule) ProposalContents(simState module.SimulationState) []simtypes.WeightedProposalContent {
 	return nil
 }
 
-// RegisterStoreDecoder registers a decoder for staking module's types
-func (am AppModule) RegisterStoreDecoder(sdr simtypes.StoreDecoderRegistry) {
-	sdr[types.StoreKey] = simulation.NewDecodeStore(am.cdc)
+// RegisterStoreDecoder registers a decoder for nft module's types
+func (am AppModule) RegisterStoreDecoder(sdr sdk.StoreDecoderRegistry) {
+	sdr[types.StoreKey] = simulation.NewDecodeStore()
 }
 
-// WeightedOperations returns the all the staking module operations with their respective weights.
+// WeightedOperations returns the all the nft module operations with their respective weights.
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
-	return simulation.WeightedOperations(
-		simState.AppParams, simState.Cdc, am.accountKeeper, am.bankKeeper, am.keeper,
-	)
+	return nil
+}
+
+// RandomizedParams creates randomized staking param changes for the simulator.
+func (AppModule) RandomizedParams(r *rand.Rand) []simtypes.ParamChange {
+	return simulation.ParamChanges(r)
 }

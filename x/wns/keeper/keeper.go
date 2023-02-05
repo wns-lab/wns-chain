@@ -18,12 +18,28 @@ type WnsKeeper interface {
 }
 
 type Keeper struct {
-	cdc      codec.Codec
+	cdc      codec.BinaryCodec
 	storeKey storetypes.StoreKey
-	memeKey  storetypes.StoreKey
 
-	authKeeper types.AuthKeeper
-	bankKeeper types.BankKeeper
+	accountKeeper types.AccountKeeper
+	bankKeeper    types.BankKeeper
+}
+
+// NewKeeper creates a new wns Keeper instance
+func NewKeeper(cdc codec.BinaryCodec,
+	key storetypes.StoreKey, ak types.AccountKeeper, bk types.BankKeeper,
+) *Keeper {
+	// ensure wns module account is set
+	if addr := ak.GetModuleAddress(types.ModuleName); addr == nil {
+		panic("the nft module account has not been set")
+	}
+
+	return &Keeper{
+		cdc:           cdc,
+		storeKey:      key,
+		accountKeeper: ak,
+		bankKeeper:    bk,
+	}
 }
 
 func (k Keeper) SetMetaData(ctx sdk.Context, name string, metadata *types.MetaData) error {
@@ -56,4 +72,24 @@ func (k Keeper) IsOwner(ctx sdk.Context, name string, address string) bool {
 	}
 
 	return false
+}
+
+func (k Keeper) IterateDomainNames(ctx sdk.Context, cb func(name *types.DomainName) (stop bool)) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := storetypes.KVStorePrefixIterator(store, types.KeyPrefixNameToMetaData)
+
+	defer iterator.Close()
+	for ; iterator.Valid(); iterator.Next() {
+		var metadata *types.MetaData
+		k.cdc.MustUnmarshal(iterator.Value(), metadata)
+
+		n := string(iterator.Key())
+		domainName := &types.DomainName{
+			Name:     n,
+			Metadata: metadata,
+		}
+		if cb(domainName) {
+			break
+		}
+	}
 }

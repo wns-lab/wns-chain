@@ -14,7 +14,11 @@ type MsgServer struct {
 	Keeper
 }
 
-func (ms MsgServer) SetMetaData(goCtx context.Context, msg *types.MsgSetMetaData) (*types.SetMetaDataResponse, error) {
+func NewMsgServerImpl(keeper Keeper) MsgServer {
+	return MsgServer{Keeper: keeper}
+}
+
+func (ms MsgServer) SetMetadata(goCtx context.Context, msg *types.MsgSetMetaData) (*types.SetMetaDataResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if !ms.IsOwner(ctx, msg.Name, msg.Sender) {
