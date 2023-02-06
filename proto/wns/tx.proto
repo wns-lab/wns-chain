@@ -1,0 +1,49 @@
+syntax = "proto3";
+package wns;
+
+// this line is used by starport scaffolding # proto/tx/import
+
+import "gogoproto/gogo.proto";
+import "wns/wns.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/wns-lab/wns-chain/x/wns/types";
+
+service Msg {
+    rpc SetMetadata(MsgSetMetaData) returns (SetMetaDataResponse) {}
+    rpc SetOwner(MsgSetOwner) returns (SetOwnerResponse) {}
+    rpc SetResolver(MsgSetResolver) returns (SetResolverResponse) {}
+    rpc SetTTL(MsgSetTTL) returns (SetTTLResponse) {}
+}
+
+message MsgSetMetaData {
+    string sender = 1;
+    string name = 2;
+    MetaData metadata = 3;
+}
+
+message SetMetaDataResponse {}
+
+message MsgSetOwner {
+    string sender = 1;
+    string name = 2;
+    string owner = 3;
+}
+
+message SetOwnerResponse {}
+
+message MsgSetResolver {
+    string sender = 1;
+    string name = 2;
+    string resolver = 3;
+}
+
+message SetResolverResponse {}
+
+message MsgSetTTL {
+    string sender = 1;
+    string name = 2;
+    int64 ttl = 3 [(gogoproto.customname) = "TTL"];
+}
+
+message SetTTLResponse {}

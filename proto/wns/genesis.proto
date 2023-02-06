@@ -1,0 +1,14 @@
+syntax = "proto3";
+package wns;
+
+import "google/protobuf/any.proto";
+import "gogoproto/gogo.proto";
+import "wns/wns.proto";
+
+option go_package = "github.com/wns-lab/wns-chain/x/wns/types";
+
+// GenesisState defines the wns module's genesis state.
+message GenesisState {
+  // names are the valid names present at genesis.
+  repeated DomainName names = 1;
+}

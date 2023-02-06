@@ -1,0 +1,25 @@
+syntax = "proto3";
+package wns;
+
+// this line is used by starport scaffolding # proto/tx/import
+
+import "gogoproto/gogo.proto";
+import "wns/wns.proto";
+import "google/protobuf/empty.proto";
+import "google/api/annotations.proto";
+
+option go_package = "github.com/wns-lab/wns-chain/x/wns/types";
+
+service Query {
+    rpc Metadata(QueryMetaDataRequest) returns (QueryMetaDataResponse) {
+        option (google.api.http).get = "/wns/beta/metadata/{name}";
+    }
+}
+
+message QueryMetaDataRequest {
+    string name = 1;
+}
+
+message QueryMetaDataResponse {
+    MetaData metadata = 1;
+}
