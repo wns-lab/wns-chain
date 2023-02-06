@@ -21,15 +21,15 @@ const (
 
 // prefix bytes for the cronos persistent store
 const (
-	prefixNodeToRecord = iota + 1
+	prefixNameToMetaData = iota + 1
 	prefixAddressToName
 	paramsKey
 )
 
 // KVStore key prefixes
 var (
-	KeyPrefixNodeToRecord  = []byte{prefixNodeToRecord}
-	KeyPrefixAddressToName = []byte{prefixAddressToName}
+	KeyPrefixNameToMetaData = []byte{prefixNameToMetaData}
+	KeyPrefixAddressToName  = []byte{prefixAddressToName}
 
 	// ParamsKey is the key for params.
 	ParamsKey = []byte{paramsKey}
@@ -37,9 +37,9 @@ var (
 
 // this line is used by starport scaffolding # ibc/keys/port
 
-// NodeToRecordKey defines the store key for node to record mapping
-func NodeToRecordKey(node Node) []byte {
-	return append(KeyPrefixNodeToRecord, node[:]...)
+// NameToMetaDataKey defines the store key for name to record mapping
+func NameToMetaDataKey(name string) []byte {
+	return append(KeyPrefixNameToMetaData, []byte(name)...)
 }
 
 // AddressToNameKey defines the store key for account address to domain name mapping

@@ -1,0 +1,17 @@
+syntax = "proto3";
+package wns;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/wns-lab/wns-chain/x/wns/types";
+
+message DomainName {
+    string name = 1;
+    MetaData metadata = 2;
+}
+
+message MetaData {
+    string owner = 1;
+    string resolver = 2;
+    int64 ttl = 3 [(gogoproto.customname) = "TTL"];
+}

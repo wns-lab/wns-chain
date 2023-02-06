@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
@@ -10,47 +9,87 @@ import (
 	"github.com/wns-lab/wns-chain/x/wns/types"
 )
 
+var _ WnsKeeper = Keeper{}
+
 type WnsKeeper interface {
-	SetRecord(sdk.Context, types.Node, types.Record) error
-	IsOwner(sdk.Context, types.Node, string) bool
-	SetNodeOwner(sdk.Context, types.Node, string) error
-	SetResolver(sdk.Context, types.Node, string) error
-	SetTTL(sdk.Context, types.Node, time.Time) error
+	SetMetaData(sdk.Context, string, *types.MetaData) error
+	GetMetaData(sdk.Context, string) (*types.MetaData, error)
+	IsOwner(sdk.Context, string, string) bool
 }
 
 type Keeper struct {
-	cdc      codec.Codec
+	cdc      codec.BinaryCodec
 	storeKey storetypes.StoreKey
-	memeKey  storetypes.StoreKey
 
-	authKeeper types.AuthKeeper
-	bankKeeper types.BankKeeper
+	accountKeeper types.AccountKeeper
+	bankKeeper    types.BankKeeper
 }
 
-func (k Keeper) SetRecord(ctx sdk.Context, node types.Node, record types.Record) error {
-	if node.IsValid() && record.IsValid() {
-		store := ctx.KVStore(k.storeKey)
-		bz := k.cdc.MustMarshal(record)
-		store.Set(types.KeyPrefixNodeToRecord(node), bz)
-		return nil
+// NewKeeper creates a new wns Keeper instance
+func NewKeeper(cdc codec.BinaryCodec,
+	key storetypes.StoreKey, ak types.AccountKeeper, bk types.BankKeeper,
+) *Keeper {
+	// ensure wns module account is set
+	if addr := ak.GetModuleAddress(types.ModuleName); addr == nil {
+		panic("the nft module account has not been set")
 	}
 
-	return fmt.Errorf("either node or record is invalid")
+	return &Keeper{
+		cdc:           cdc,
+		storeKey:      key,
+		accountKeeper: ak,
+		bankKeeper:    bk,
+	}
 }
 
-func (k Keeper) IsOwner(ctx, sdk.Context, node types.Node, address string) bool {
+func (k Keeper) SetMetaData(ctx sdk.Context, name string, metadata *types.MetaData) error {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(node[:])
-	var record *types.Record
-	k.cdc.MustUnmarshal(bz, record)
-	if record == nil {
+	bz := k.cdc.MustMarshal(metadata)
+	store.Set(types.NameToMetaDataKey(name), bz)
+	return nil
+}
+
+func (k Keeper) GetMetaData(ctx sdk.Context, name string) (*types.MetaData, error) {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.NameToMetaDataKey(name))
+	if bz == nil {
+		return nil, fmt.Errorf("record not found for name %v", name)
+	}
+
+	var metadata *types.MetaData
+	k.cdc.MustUnmarshal(bz, metadata)
+	return metadata, nil
+}
+
+func (k Keeper) IsOwner(ctx sdk.Context, name string, address string) bool {
+	metadata, err := k.GetMetaData(ctx, name)
+	if err != nil {
 		return false
 	}
 
-	if record.Owner == address {
+	if metadata.Owner == address {
 		return true
 	}
 
 	return false
 }
 
+func (k Keeper) IterateDomainNames(ctx sdk.Context, cb func(name *types.DomainName) (stop bool)) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := storetypes.KVStorePrefixIterator(store, types.KeyPrefixNameToMetaData)
+
+	defer iterator.Close()
+	for ; iterator.Valid(); iterator.Next() {
+		var metadata *types.MetaData
+		k.cdc.MustUnmarshal(iterator.Value(), metadata)
+
+		n := string(iterator.Key())
+		domainName := &types.DomainName{
+			Name:     n,
+			Metadata: metadata,
+		}
+		if cb(domainName) {
+			break
+		}
+	}
+}
